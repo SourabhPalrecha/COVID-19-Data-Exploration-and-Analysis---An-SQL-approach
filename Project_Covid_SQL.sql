@@ -1,3 +1,12 @@
+/*
+Covid 19 Data Exploration 
+
+Skills used: Joins, CTE's, Temp Tables, Windows Functions, Aggregate Functions, Creating Views, Converting Data Types
+
+*/
+
+-- Select Data that we are going to be starting with
+
 Select *
 from Portfolio_project..covid_deaths
 where continent is NOT null
@@ -5,14 +14,17 @@ where continent is NOT null
 Select location, date, total_cases, total_deaths, new_cases, population
 from Portfolio_project..covid_deaths
 
+	
 -- Look at Total Cases Vs Total Death and analyze and find the percentage of deaths occurred.
 -- Check for UnitedStates
 
 Select location, date, total_cases, total_deaths, (total_deaths/total_cases)*100 as DeathPercentage
 from Portfolio_project..covid_deaths
 where location like '%states%'
+and continent is not null 
 order by 1,2
 
+	
 -- Look at Total Cases Vs Population and analyse and find the percentage of people who contracted COVID
 
 Select location, date, total_cases, population, (total_cases/population)*100 as Percent_Population_Infected
@@ -20,6 +32,7 @@ from Portfolio_project..covid_deaths
 where location like '%states%'
 order by 1,2
 
+	
 -- Look at Countries with highest infection rate comapred to population size
 -- also analyze the most infected Continent
 
@@ -27,6 +40,7 @@ Select continent,location, max(total_cases) as HighestInfectionCount, population
 from Portfolio_project..covid_deaths
 group by continent, location, population
 order by Percent_Population_Infected desc
+
 
 -- Look at countrie with highest death count per population
 
@@ -36,6 +50,7 @@ where continent is NOT null
 group by location
 order by DeathCount desc
 
+
 -- Look at continent with highest death count per population
 
 Select continent, max(cast(total_deaths as int)) as DeathCount 
@@ -43,6 +58,7 @@ from Portfolio_project..covid_deaths
 where continent is NOT null
 group by continent
 order by DeathCount desc
+
 
 -- look at Global Numbers of cases and death across the globe
 
@@ -52,12 +68,14 @@ where continent is not NULL
 group by date
 order by 1,2
 
+
 -- look at Total number of new cases and death cases recorded globally
 
 Select sum(new_cases) as Total_Cases, sum(cast(new_deaths as int)) as Total_Deaths, sum(cast(new_deaths as int))/sum(new_cases)*100 as DeathPercentage
 from Portfolio_project..covid_deaths
 where continent is not NULL
 --order by 1,2
+
 
 -- look at total Population Vs Vaccinations(Vaccinated Population) and give insights in form of percentage
 
@@ -89,7 +107,10 @@ from PopVsVac
 group by Location
 order by Location
 
+
+
 -- Use of Temp Table ------------------------------------------------------------------------------------------------------
+
 Drop table if exists #Percent_Population_Vaccinated
 create table #Percent_Population_Vaccinated
 (
